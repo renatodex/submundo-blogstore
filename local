@@ -1,2 +1,0 @@
-export DATABASE_URL=postgres://submundo:submundo@localhost:5432/submundo
-php -d variables_order=EGPCS -S localhost:5000

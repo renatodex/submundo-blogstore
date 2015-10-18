@@ -1,0 +1,4 @@
+<a href="http://www.facebook.com/sharer.php?u=<?php the_permalink();?>&t=<?php the_title(); ?>" title="<?php _e( 'Facebook', 'weekend' ) ?>" target="_blank"><i class="fa fa-facebook"></i></a>
+<a href="http://twitter.com/home?status=<?php the_title(); ?> <?php the_permalink(); ?>" title="<?php _e( 'Twitter', 'weekend' ) ?>" target="_blank"><i class="fa fa-twitter"></i></a>
+<a href="http://linkedin.com/shareArticle?mini=true&amp;url=<?php the_permalink();?>&amp;title=<?php the_title();?>" title="<?php _e( 'LinkedIn', 'weekend' ) ?>" target="_blank"><i class="fa fa-linkedin"></i></a>
+<a href="https://plus.google.com/share?url=<?php the_permalink() ?>&amp;title=<?php echo urlencode(the_title('', '', false)) ?>" title="<?php _e( 'Google+', 'weekend' ) ?>" target="_blank"><i class="fa fa-google-plus"></i></a>

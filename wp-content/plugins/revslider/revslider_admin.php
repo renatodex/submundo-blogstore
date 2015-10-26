@@ -84,18 +84,18 @@
 
 				if(isset($_GET['checkforupdates']) && $_GET['checkforupdates'] == 'true')
 					$upgrade->_retrieve_version_info(true);
-				
+
 				if(get_option('revslider-valid', 'false') === 'true') {
 					$upgrade->add_update_checks();
 				}
 			}
 
 			self::addAction('admin_enqueue_scripts', 'enqueue_styles');
-			
-			
+
+
 			add_action('wp_ajax_revslider_ajax_call_front', array('RevSliderAdmin', 'onFrontAjaxAction'));
 			add_action('wp_ajax_nopriv_revslider_ajax_call_front', array('RevSliderAdmin', 'onFrontAjaxAction')); //for not logged in users
-			
+
 		}
 
 		public static function enqueue_styles(){
@@ -224,14 +224,14 @@
 		 */
 		public static function onAddScripts(){
 			global $wp_version;
-			
+
 			$style_pre = '';
 			$style_post = '';
 			if($wp_version < 3.7){
 				$style_pre = '<style type="text/css">';
 				$style_post = '</style>';
 			}
-			
+
 			self::addStyle("edit_layers","edit_layers");
 
 			//add google font
@@ -337,58 +337,52 @@
 			switch($tableName){
 				case GlobalsRevSlider::TABLE_SLIDERS_NAME:
 				$sql = "CREATE TABLE " .self::$table_prefix.$tableName ." (
-							  id int(9) NOT NULL AUTO_INCREMENT,
+							  id  SERIAL PRIMARY KEY,
 							  title tinytext NOT NULL,
 							  alias tinytext,
-							  params text NOT NULL,
-							  PRIMARY KEY  (id)
-							)$charset_collate;";
+							  params text NOT NULL
+							);";
 				break;
 				case GlobalsRevSlider::TABLE_SLIDES_NAME:
 					$sql = "CREATE TABLE " .self::$table_prefix.$tableName ." (
-								  id int(9) NOT NULL AUTO_INCREMENT,
-								  slider_id int(9) NOT NULL,
+								  id  SERIAL PRIMARY KEY,
+								  slider_id int NOT NULL,
 								  slide_order int not NULL,
 								  params text NOT NULL,
-								  layers text NOT NULL,
-								  PRIMARY KEY  (id)
-								)$charset_collate;";
+								  layers text NOT NULL
+								);";
 				break;
 				case GlobalsRevSlider::TABLE_STATIC_SLIDES_NAME:
 					$sql = "CREATE TABLE " .self::$table_prefix.$tableName ." (
-								  id int(9) NOT NULL AUTO_INCREMENT,
-								  slider_id int(9) NOT NULL,
+								  id  SERIAL PRIMARY KEY,
+								  slider_id int NOT NULL,
 								  params text NOT NULL,
-								  layers text NOT NULL,
-								  PRIMARY KEY  (id)
-								)$charset_collate;";
+								  layers text NOT NULL
+								);";
 				break;
 				case GlobalsRevSlider::TABLE_SETTINGS_NAME:
 					$sql = "CREATE TABLE " .self::$table_prefix.$tableName ." (
-								  id int(9) NOT NULL AUTO_INCREMENT,
+								  id  SERIAL PRIMARY KEY,
 								  general TEXT NOT NULL,
-								  params TEXT NOT NULL,
-								  PRIMARY KEY  (id)
-								)$charset_collate;";
+								  params TEXT NOT NULL
+								);";
 				break;
 				case GlobalsRevSlider::TABLE_CSS_NAME:
 					$sql = "CREATE TABLE " .self::$table_prefix.$tableName ." (
-								  id int(9) NOT NULL AUTO_INCREMENT,
+								  id  SERIAL PRIMARY KEY,
 								  handle TEXT NOT NULL,
 								  settings TEXT,
 								  hover TEXT,
-								  params TEXT NOT NULL,
-								  PRIMARY KEY  (id)
-								)$charset_collate;";
+								  params TEXT NOT NULL
+								);";
 					$parseCssToDb = true;
 				break;
 				case GlobalsRevSlider::TABLE_LAYER_ANIMS_NAME:
 					$sql = "CREATE TABLE " .self::$table_prefix.$tableName ." (
-								  id int(9) NOT NULL AUTO_INCREMENT,
+								  id  SERIAL PRIMARY KEY,
 								  handle TEXT NOT NULL,
 								  params TEXT NOT NULL,
-								  PRIMARY KEY  (id)
-								)$charset_collate;";
+								);";
 				break;
 
 				default:
@@ -776,14 +770,14 @@
 			self::ajaxResponseError("No response output on <b> $action </b> action. please check with the developer.");
 			exit();
 		}
-		
+
 		/**
 		 * Set the option to add a delay to the revslider javascript output
 		 */
 		public static function rev_set_js_delay($do_delay){
 			return '300';
 		}
-		
+
 		/**
 		 * onAjax action handler
 		 */
@@ -792,12 +786,12 @@
 			$slider = new RevSlider();
 			$slide = new RevSlide();
 			$operations = new RevOperations();
-			
+
 			$token = self::getPostVar("token", false);
-			
+
 			//verify the token
 			$isVerified = wp_verify_nonce($token, 'RevSlider_Front');
-			
+
 			$error = false;
 			if($isVerified){
 				$data = self::getPostVar('data', false);
@@ -810,26 +804,26 @@
 							ob_start();
 							$slider_class = RevSliderOutput::putSlider($id);
 							$html = ob_get_contents();
-							
+
 							//add styling
 							$custom_css = RevOperations::getStaticCss();
 							$custom_css = UniteCssParserRev::compress_css($custom_css);
 							$styles = $db->fetch(GlobalsRevSlider::$table_css);
 							$styles = UniteCssParserRev::parseDbArrayToCss($styles, "\n");
 							$styles = UniteCssParserRev::compress_css($styles);
-							
+
 							$html .= '<style type="text/css">'.$custom_css.'</style>';
 							$html .= '<style type="text/css">'.$styles.'</style>';
-							
+
 							ob_clean();
 							ob_end_clean();
-							
+
 							$result = (!empty($slider_class) && $html !== '') ? true : false;
-							
+
 							if(!$result){
 								$error = __('Slider not found', REVSLIDER_TEXTDOMAIN);
 							}else{
-								
+
 								if($html !== false){
 									self::ajaxResponseData($html);
 								}else{
@@ -841,21 +835,21 @@
 						}
 					break;
 				}
-				
+
 			}else{
 				$error = true;
 			}
-			
+
 			if($error !== false){
 				$showError = __('Loading Error', REVSLIDER_TEXTDOMAIN);
 				if($error !== true)
 					$showError = __('Loading Error: ', REVSLIDER_TEXTDOMAIN).$error;
-				
+
 				self::ajaxResponseError($showError, false);
 			}
 			exit();
 		}
-		
+
 
 	}
 

@@ -1,1 +1,1 @@
-web: php -S 127.0.0.1:5001
+web: php -d variables_order=EGPCS -S 127.0.0.1:5001

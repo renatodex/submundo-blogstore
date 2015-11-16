@@ -10601,7 +10601,7 @@ msgstr "Descrição do produto"
 
 #: templates/single-product/up-sells.php:43
 msgid "You may also like&hellip;"
-msgstr "Você também pode gostar de&hellip;"
+msgstr "Outros produtos do artista&hellip;"
 
 #: templates/single-product-reviews.php:24
 msgid "%s review for %s"

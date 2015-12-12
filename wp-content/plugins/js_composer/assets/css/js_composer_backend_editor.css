@@ -937,6 +937,7 @@ button.vc_btn {
   font-size: 100%;
   line-height: 20px;
   border-radius: 4px;
+  text-align:center;
   /* Button colors variations */
 }
 .vc_btn,
